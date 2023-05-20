@@ -4,53 +4,46 @@ My first application
 import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
-import httpx
 
-def greeting(name):
-    if name:
-        if name == "Brutus":
-            return "BeeWare the IDEs of Python!"
-        else:
-            return f"Hello, {name}"
+
+def valid_word(word):
+    if len(word) == 5:
+        return word
     else:
-        return "Hello, stranger"
+        return "Not a valid word"
+
 
 class WordleClone(toga.App):
     def startup(self):
         main_box = toga.Box(style=Pack(direction=COLUMN))
 
-        name_label = toga.Label(
-            "Your name: ",
+        guess_label = toga.Label(
+            "Guess: ",
             style=Pack(padding=(0, 5))
         )
         self.name_input = toga.TextInput(style=Pack(flex=1))
 
-        name_box = toga.Box(style=Pack(direction=ROW, padding=5))
-        name_box.add(name_label)
-        name_box.add(self.name_input)
+        guess_box = toga.Box(style=Pack(direction=ROW, padding=5))
+        guess_box.add(guess_label)
+        guess_box.add(self.name_input)
 
         button = toga.Button(
-            "Say Hello!",
-            on_press=self.say_hello,
+            "Guess",
+            on_press=self.guess_word,
             style=Pack(padding=5)
         )
 
-        main_box.add(name_box)
+        main_box.add(guess_box)
         main_box.add(button)
 
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = main_box
         self.main_window.show()
 
-    async def say_hello(self, widget):
-        async with httpx.AsyncClient() as client:
-            response = await client.get("https://jsonplaceholder.typicode.com/posts/42")
-
-        payload = response.json()
-
+    async def guess_word(self, widget):
         self.main_window.info_dialog(
-            greeting(self.name_input.value),
-            payload["body"],
+            "Your Guess",
+            f"{valid_word(self.name_input.value)}",
         )
 def main():
     return WordleClone()
