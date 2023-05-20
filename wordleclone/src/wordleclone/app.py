@@ -8,7 +8,10 @@ import httpx
 
 def greeting(name):
     if name:
-        return f"Hello, {name}"
+        if name == "Brutus":
+            return "BeeWare the IDEs of Python!"
+        else:
+            return f"Hello, {name}"
     else:
         return "Hello, stranger"
 
